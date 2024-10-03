@@ -3,15 +3,15 @@
     CONFIG WDT = OFF 
     org 0x00 ; PC = 0x00
 
-    movlw 0x2a
+    movlw 0x00
     movwf 0x00
-    movlw 0x41
+    movlw 0x03
     movwf 0x01
     
-    movlw 0x11
+    movlw 0x10
     movwf 0x10 ; count
     movlw 0x00
-    movwf 0x11 ; result
+    movwf 0x02 ; result
     
 find_MSB:
     dcfsnz 0x10
@@ -22,7 +22,7 @@ find_MSB:
     rlcf 0x00, f
     btfss STATUS, 0
 	goto find_MSB
-    movff 0x10, 0x11
+    movff 0x10, 0x02
     goto find_if_carry
    
 find_if_carry:
@@ -33,6 +33,9 @@ find_if_carry:
     rlcf 0x00, f
     btfss STATUS, 0
 	goto find_if_carry
-    incf 0x11
+    incf 0x02
 done:
+    btfsc 0x000, 7
+	incf 0x02
+    clrf WREG
 end
