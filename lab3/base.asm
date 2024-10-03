@@ -16,7 +16,5 @@
     btfsc TRISA, 7
 	bsf STATUS, C
     rrcf TRISA, F
-    btfsc STATUS, C
-	bsf TRISA, 7 
     bcf STATUS, C
 end
