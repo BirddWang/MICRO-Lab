@@ -15,26 +15,26 @@ void displayBinary(int num) {
     LATDbits.LATD2 = (num & 0x04) ? 1 : 0;
     LATDbits.LATD3 = (num & 0x08) ? 1 : 0; // Most significant bit
 }
+
 void Mode1(){   // Todo : Mode1 
-    UART_Write_Text("------MODE 1 NOW-----\n");
-    char *inputStr;
-    int num;
+    mode = 1;
+    UART_Write_Text("IN MODE 1\r\n");
+    LATD = 0x00;
+    TRISD = 0x00;
+    char message[20];
     while(1) {
-        UART_Write_Text("Enter 0~9: ");
-        inputStr = GetString();
-        num = inputStr[0] - '0';
-        
-        if(num >= 0 && num<=9) {
-            displayBinary(num);
+        strcpy(message, GetString());
+        if(strcmp(message, "exit") == 0) {
+            UART_Write_Text("EXIT MODE 1\r\n");
+            break;
         }
     }
-    
     return ;
 }
 void Mode2(){   // Todo : Mode2 
     mode = 2;
     UART_Write_Text("IN MODE 2\r\n");
-    LATD = 0;
+    LATD = 0x00;
     TRISD = 0x00;
     char message[20];
     while(1) {
@@ -84,6 +84,17 @@ void __interrupt(low_priority)  Lo_ISR(void)
         //READ
         MyusartRead();
         //Update
+        if(mode == 1) {
+            int num;
+            char m1_message[20];
+            strcpy(m1_message, GetString());
+            num = m1_message[0] - '0';
+            if(num >= 0 && num <= 9) {
+                curr = num;
+                LATD = curr;
+                __delay_ms(50);
+            }
+        }
         if(mode == 2) {
             int num;
             char m2_message[20];
